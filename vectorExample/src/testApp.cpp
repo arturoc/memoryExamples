@@ -47,7 +47,7 @@ void testApp::draw(){
 	// move when it moves in memory
 	int offset= totalPosInScreen/2;
 	long int firstRelAddress = getIntRelAddress(&theVector[0]);
-	long int lastRelAddress = getIntRelAddress(&theVector[theVector.capacity()-1]);
+	long int lastRelAddress = getIntRelAddress(&theVector[0]+ (theVector.capacity() - 1));
 	if(theVector.size() && firstRelAddress + totalPosInScreen/2<0){
 		offset = -firstRelAddress;
 	}
@@ -73,9 +73,9 @@ void testApp::draw(){
 	for(int i=0;i<theVector.capacity();i++){
 		// use the offsets calculated before to make the vector move in the screen
 		// according to it's position in memory
-		long int intAddress = getIntRelAddress(&theVector[i]);
-		int x = (((intAddress+offset)*posSize)%(ofGetWidth()-80))+80;
-		int y = posSize*float(((intAddress+offset)*posSize)/(ofGetWidth()-80))+80;
+		long int intAddress = getIntRelAddress(&theVector[0]+ (i));
+		int x = (((intAddress + offset)*posSize) % (ofGetWidth() - 80)) + 80;
+		int y = posSize*float(((intAddress + offset)*posSize) / (ofGetWidth() - 80)) + 80;
 
 		// the size of the vector is how much memory is actually used
 		// lets draw them as filled squares
@@ -93,7 +93,7 @@ void testApp::draw(){
 	}
 
 	ofDrawBitmapString("init address: " + ofToHex((long int)&theVector[0]),20,40);
-	ofDrawBitmapString("end address: " + ofToHex((long int)&theVector[theVector.capacity()-1]),20,60);
+	ofDrawBitmapString("end address: " + ofToHex((long int)&theVector[0] + theVector.capacity() - 1),20,60);
 
 
 
@@ -108,7 +108,9 @@ void testApp::keyPressed(int key){
 		if(theVector.size()==1) initAddress = &theVector[0];
 		break;
 	case 'e':
-		theVector.erase(theVector.end()-1);
+		if (theVector.size()>1){
+			theVector.erase(theVector.end()-1);
+		}
 		break;
 	case 'b':
 		theVector.erase(theVector.begin());
